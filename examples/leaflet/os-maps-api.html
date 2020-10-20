@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="L.TileLayerWithHeaders.js"></script>
+<script>
+
+    var basemap = L.tileLayer('https://api.os.uk/maps/raster/v1/zxy/Outdoor_3857/{z}/{x}/{y}.png', {
+        maxZoom: 20
+    }, [], null);
+
+    var mapOptions = {
+        layers: [ basemap ],
+        minZoom: 7,
+        maxZoom: 20,
+        center: [ 54.425, -2.968 ],
+        zoom: 14,
+        attributionControl: false
+    };
+
+    let accessToken;
+
+    function getToken() {
+        return fetch('../../token.php')
+            .then(response => response.json())
+            .then(result => {
+                if( result.access_token ) {
+                    // Store this token.
+                    accessToken = result.access_token;
+
+                    //
+                    basemap.headers[0] = {
+                        header: 'Authorization',
+                        value: 'Bearer ' + accessToken
+                    };
+
+                    // Get a new token 30 seconds before this one expires.
+                    const timeoutMS = (result.expires_in - 30) * 1000;
+                    setTimeout(getToken, timeoutMS);
+                }
+                else {
+                    // We failed to get the token.
+                    return Promise.reject();
+                }
+            })
+            .catch(error => {
+                console.log('Got an error loading access token!');
+                return Promise.reject();
+            });
+    }
+
+    getToken().then(() => {
+        var map = L.map('map', mapOptions);
+    });
+
+</script>
+
+</body>
+</html>

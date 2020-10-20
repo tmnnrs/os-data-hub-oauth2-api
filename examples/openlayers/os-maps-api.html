@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+<script>
+
+    let accessToken;
+
+    function getToken() {
+        return fetch('../../token.php')
+            .then(response => response.json())
+            .then(result => {
+                if( result.access_token ) {
+                    // Store this token.
+                    accessToken = result.access_token;
+
+                    // Get a new token 30 seconds before this one expires.
+                    const timeoutMS = (result.expires_in - 30) * 1000;
+                    setTimeout(getToken, timeoutMS);
+                }
+                else {
+                    // We failed to get the token.
+                    return Promise.reject();
+                }
+            })
+            .catch(error => {
+                console.log('Got an error loading access token!');
+                return Promise.reject();
+            });
+    }
+
+    getToken().then(() => {
+        var tileSource = new ol.source.XYZ({
+            url: 'https://api.os.uk/maps/raster/v1/zxy/Outdoor_3857/{z}/{x}/{y}.png',
+            tileLoadFunction: (tile, src) => {
+                fetch(src, {
+                    headers: {
+                        Authorization: 'Bearer ' + accessToken
+                    }
+                })
+                .then(response => {
+                    if( response.ok ) {
+                        return response
+                    }
+                    return Reject(response);
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        var data = 'data:image/png;base64,' + btoa(reader.result);
+                        tile.getImage().src = data;
+                    };
+                    reader.readAsBinaryString(blob);
+                })
+                .catch(error => {});
+            }
+
+        });
+
+        var tileLayer = new ol.layer.Tile({ source: tileSource });
+
+        var map = new ol.Map({
+            layers: [ tileLayer ],
+            target: 'map',
+            view: new ol.View({
+                projection: 'EPSG:3857',
+                minZoom: 7,
+                maxZoom: 20,
+                center: ol.proj.fromLonLat([ -2.968, 54.425 ]),
+                zoom: 14
+            })
+        });
+    });
+
+</script>
+
+</body>
+</html>
