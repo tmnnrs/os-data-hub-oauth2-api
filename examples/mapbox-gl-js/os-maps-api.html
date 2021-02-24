@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
     <meta charset="utf-8" />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>OAuth 2 API | OS Maps API | Mapbox GL JS</title>
     <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.css" />
-    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" />
+    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.css" />
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -18,7 +17,7 @@
 <div id="map"></div>
 
 <script src="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.js"></script>
-<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
 <script>
 
     let accessToken;
@@ -53,7 +52,7 @@
             "sources": {
                 "raster-tiles": {
                     "type": "raster",
-                    "tiles": [ "https://api.os.uk/maps/raster/v1/zxy/Light_3857/{z}/{x}/{y}.png" ],
+                    "tiles": [ "https://api.os.uk/maps/raster/v1/zxy/Outdoor_3857/{z}/{x}/{y}.png" ],
                     "tileSize": 256,
                     "maxzoom": 20
                 }
