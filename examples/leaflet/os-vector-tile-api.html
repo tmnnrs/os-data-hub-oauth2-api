@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OAuth 2 API | OS Vector Tile API | Leaflet</title>
-    <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.css" />
+    <link rel="stylesheet" href="https://labs.os.uk/public/os-api-branding/v0.3.1/os-api-branding.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" />
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -16,10 +16,10 @@
 
 <div id="map"></div>
 
-<script src="https://labs.os.uk/public/os-api-branding/v0.2.0/os-api-branding.js"></script>
+<script src="https://labs.os.uk/public/os-api-branding/v0.3.1/os-api-branding.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
-<script src="https://unpkg.com/mapbox-gl-leaflet/leaflet-mapbox-gl.js"></script>
+<script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.17/leaflet-maplibre-gl.js"></script>
 <script>
 
     let accessToken;
@@ -49,7 +49,7 @@
 
     getToken().then(() => {
         // Initialize the map.
-        var mapOptions = {
+        const mapOptions = {
             minZoom: 7,
             maxZoom: 19,
             center: [ 54.425, -2.968 ],
@@ -57,10 +57,10 @@
             attributionControl: false
         };
 
-        var map = L.map('map', mapOptions);
+        const map = L.map('map', mapOptions);
 
         // Load and display vector tile layer on the map.
-        var gl = L.mapboxGL({
+        const gl = L.maplibreGL({
             style: 'https://api.os.uk/maps/vector/v1/vts/resources/styles',
             transformRequest: (url, resourceType) => {
                 return {
