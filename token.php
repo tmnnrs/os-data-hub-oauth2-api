@@ -9,7 +9,7 @@
 
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_USERPWD, "$projectAPIKey:$projectAPISecret");
+  curl_setopt($ch, CURLOPT_USERPWD, "{$projectAPIKey}:{$projectAPISecret}");
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
